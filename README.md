@@ -1,93 +1,109 @@
-# MyST Website Template
+# MyST Article Template
 
-A reusable template for building websites with [MyST Markdown](https://mystmd.org/) and automated deployment via GitHub Actions.
+A reusable template for writing single-page articles with [MyST Markdown](https://mystmd.org/), built as HTML and PDF via GitHub Actions.
 
 ## Features
 
-- **MyST Markdown** source format with Jupyter notebook integration
-- **GitHub Pages** deployment on push to `main`
-- **Netlify PR previews** for pull request review
+- **MyST Markdown** source format with Jupyter code-cell support
+- **`article-theme`** single-page layout
+- **PDF export** via the `lapreprint-typst` template, driven by a Python script
+- **GitHub Pages** deployment on push to `main` (HTML + downloadable PDF)
 - **Pre-commit hooks**: Black, codespell, nbstripout for code quality
 
 ## Quick Start
 
 1. Click **Use this template** on GitHub to create a new repository
-2. Update `myst.yml` with your site title, author, and table of contents
-3. Replace placeholder content in `book/` with your own pages
-4. Push to GitHub to trigger automated builds
+2. Update `myst.yml` with your article title and GitHub `owner/repo`
+3. Edit the frontmatter and content of `article.md` (title, authors, abstract, keywords, body)
+4. Push to GitHub to trigger automated HTML and PDF builds
 
 ## Project Structure
 
 ```
 .
-├── myst.yml                    # MyST configuration
-├── index.md                    # Landing page
+├── myst.yml                    # MyST configuration (article-theme)
+├── article.md                  # The article (single source of truth)
+├── references.bib              # Bibliography
+├── build_pdf.py                # Python script that builds the PDF
 ├── requirements.txt            # Python dependencies
+├── images/                     # Article figures
+│   └── sample_figure.png
 ├── logo.png                    # Site logo
 ├── fav.ico                     # Favicon
+├── custom.css                  # Site styling overrides
 ├── CNAME                       # Custom domain (optional)
 ├── robots.txt                  # Search engine directives
-├── book/                       # Site content
-│   ├── preface.md
-│   ├── part01/
-│   │   ├── getting-started.md
-│   │   └── installation.md
-│   ├── part02/
-│   │   └── first-example.md
-│   ├── references.bib          # Bibliography
-│   ├── jupytext.toml
-│   └── images/                 # Shared images
 ├── .pre-commit-config.yaml     # Pre-commit hook configuration
-├── CONTRIBUTING.md              # Contribution guidelines
-├── CONDUCT.md                   # Code of conduct
+├── CONTRIBUTING.md             # Contribution guidelines
+├── CONDUCT.md                  # Code of conduct
 └── .github/workflows/
-    ├── build.yml               # PR preview builds (Netlify)
-    └── deploy.yml              # Production deployment (GitHub Pages)
+    ├── build.yml               # PR build: HTML + PDF artifact
+    └── deploy.yml              # Production deploy to GitHub Pages
 ```
 
 ## Customization
 
+### Article Metadata
+
+Edit the frontmatter at the top of `article.md`:
+
+- `title`, `subtitle`, `short_title`
+- `authors`: name, affiliations, email
+- `abstract`, `keywords`
+- `exports`: PDF template and output path
+
 ### Site Metadata
 
 Edit `myst.yml`:
-- `project.title`: your site title
-- `project.authors`: author name(s)
-- `project.github`: your GitHub `username/repo`
-- `project.toc`: table of contents structure
 
-### Adding Pages
-
-1. Create a new `.md` file in the appropriate `book/` subdirectory
-2. Add the file to `project.toc` in `myst.yml`
+- `project.title`: matches the article title
+- `project.github`: your GitHub `owner/repo`
+- `project.bibliography`: bibliography files
+- `site.template`: kept as `article-theme`
 
 ## Building Locally
+
+Install the toolchain:
 
 ```bash
 pip install -r requirements.txt
 npm install -g mystmd
-myst build --html
+# Install the Typst CLI from https://github.com/typst/typst
 ```
 
-The built site will be in `_build/html/`.
+Build the HTML site:
+
+```bash
+myst build --html
+# output: _build/html/
+```
+
+Build the PDF:
+
+```bash
+python build_pdf.py
+# output: _build/exports/article.pdf
+```
+
+The script wraps `myst build --pdf`, checks that `myst` and `typst` are on `PATH`, and verifies the expected output file was produced.
 
 ## Deployment
 
 ### GitHub Pages (production)
 
-Pushes to `main` automatically trigger the `deploy.yml` workflow, which builds the HTML site and deploys to GitHub Pages.
+Pushes to `main` trigger the `deploy.yml` workflow, which:
 
-By default, `BASE_URL` is set to `/<repo-name>` so that asset paths work correctly when served at `username.github.io/repo-name/`. If you configure a custom domain (via `CNAME`), remove the `BASE_URL` environment variable from `deploy.yml` since the site will be served from the root.
+1. Installs `mystmd` (via npm) and `typst`
+2. Builds the HTML site (`myst build --html`)
+3. Builds the PDF (`python build_pdf.py`)
+4. Copies `article.pdf` into the HTML output so it's downloadable from the published site
+5. Deploys to GitHub Pages
 
-### Netlify (PR previews)
+By default, `BASE_URL` is set to `/<repo-name>` so asset paths work when served at `username.github.io/repo-name/`. If you configure a custom domain (via `CNAME`), remove the `BASE_URL` environment variable from `deploy.yml`.
 
-Pull requests trigger the `build.yml` workflow, which builds a preview and posts the URL as a PR comment. Requires `NETLIFY_AUTH_TOKEN` and `NETLIFY_SITE_ID` secrets.
+### Pull request builds
 
-## GitHub Secrets
-
-| Secret | Purpose |
-|--------|---------|
-| `NETLIFY_AUTH_TOKEN` | Netlify authentication for PR previews |
-| `NETLIFY_SITE_ID` | Netlify site ID for PR previews |
+Pull requests trigger the `build.yml` workflow, which builds the HTML site and the PDF, then uploads the PDF as an `article-pdf` workflow artifact for download from the run summary.
 
 ## License
 

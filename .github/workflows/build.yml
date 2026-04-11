@@ -10,7 +10,7 @@ permissions:
   pull-requests: write
 
 jobs:
-  build-the-book:
+  build-the-article:
     runs-on: ubuntu-latest
 
     steps:
@@ -20,13 +20,32 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: 18.x
+          node-version: 25
 
       - name: Install MyST Markdown
         run: npm install -g mystmd
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Typst
+        uses: typst-community/setup-typst@v4
+
+      - name: Build PDF
+        run: python build_pdf.py
+
       - name: Build HTML Assets
         run: myst build --html
+
+      - name: Upload PDF artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: article-pdf
+          path: article.pdf
 
       # - name: Deploy to Netlify
       #   uses: nwtgck/actions-netlify@v3.0

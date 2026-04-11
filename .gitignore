@@ -109,6 +109,9 @@ ENV/
 _build/
 book-clean/
 
+# Built PDF (produced by build_pdf.py, referenced by article.md downloads)
+/article.pdf
+
 # Translation image directories (images are copied from book/images/ at build time)
 book-*/images/
 
