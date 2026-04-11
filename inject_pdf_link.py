@@ -83,7 +83,12 @@ def inject_link(html: str) -> tuple[str, bool]:
     """
     if "pdf-download-link" in html:
         return html, False
-    new_html, n = BODY_END_PATTERN.subn(INJECTION_SCRIPT + "</body>", html, count=1)
+    # Replacement is passed as a lambda so Python's regex engine does not
+    # try to interpret backslash escapes (e.g. `\u{1F4C4}`) inside the
+    # injected JavaScript as regex references.
+    new_html, n = BODY_END_PATTERN.subn(
+        lambda _match: INJECTION_SCRIPT + "</body>", html, count=1
+    )
     return new_html, n > 0
 
 
