@@ -5,10 +5,12 @@ Runs after ``myst build --html`` as a deploy-time post-process. This keeps
 the link out of the MyST source (and therefore out of the Typst/PDF export)
 while still surfacing it on the published HTML site.
 
-The link is inserted right before the first ``<h1>`` tag found in each
-HTML file under ``_build/html/``. The target PDF path is ``article.pdf``,
-which the deploy workflow places at the HTML site root alongside each
-page.
+The link is inserted right before the first ``<header`` tag found in
+each HTML file under ``_build/html/``. That puts it above the article
+header (title, authors, abstract) and crucially *outside* the theme's
+``<section id="frontmatter">`` block, which otherwise hides unexpected
+children via CSS. The target PDF path is ``article.pdf``, which the
+deploy workflow copies to the HTML site root.
 
 Usage:
     python inject_pdf_link.py
@@ -24,26 +26,29 @@ REPO_ROOT = Path(__file__).resolve().parent
 HTML_DIR = REPO_ROOT / "_build" / "html"
 
 LINK_HTML = (
-    '<p class="pdf-download-link" '
-    'style="margin:1em 0;font-size:1.05em;">'
-    '<a href="article.pdf"><strong>Download PDF</strong></a>'
-    "</p>"
+    '<div class="pdf-download-link" '
+    'style="margin:1rem 0;padding:0.5rem 0;font-size:1.05em;">'
+    '<a href="article.pdf" '
+    'style="display:inline-block;padding:0.4em 0.9em;'
+    "border:1px solid currentColor;border-radius:0.4em;"
+    'text-decoration:none;"><strong>&#128196; Download PDF</strong></a>'
+    "</div>"
 )
 
-H1_PATTERN = re.compile(r"<h1\b", flags=re.IGNORECASE)
+HEADER_PATTERN = re.compile(r"<header\b", flags=re.IGNORECASE)
 
 
 def inject_link(html: str) -> tuple[str, bool]:
-    """Insert the download link immediately before the first ``<h1>``.
+    """Insert the download link immediately before the first ``<header>``.
 
     Args:
         html: Raw HTML contents of a built page.
 
     Returns:
         A tuple of ``(new_html, changed)`` where ``changed`` is True iff
-        an ``<h1>`` was found and the link was injected.
+        a ``<header>`` was found and the link was injected.
     """
-    new_html, n = H1_PATTERN.subn(LINK_HTML + r"<h1", html, count=1)
+    new_html, n = HEADER_PATTERN.subn(LINK_HTML + r"<header", html, count=1)
     return new_html, n > 0
 
 

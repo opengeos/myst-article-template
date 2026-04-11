@@ -55,6 +55,9 @@ jobs:
           BASE_URL: /${{ github.event.repository.name }}
         run: myst build --html
 
+      - name: Copy PDF into site root
+        run: cp ./article.pdf ./_build/html/article.pdf
+
       - name: Inject PDF download link into HTML
         run: python inject_pdf_link.py
 
