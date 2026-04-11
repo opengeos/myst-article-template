@@ -36,6 +36,19 @@ jobs:
       - name: Install MyST Markdown
         run: npm install -g mystmd
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install Typst
+        uses: typst-community/setup-typst@v4
+
+      - name: Build PDF
+        run: python build_pdf.py
+
       - name: Build HTML Assets
         # Remove BASE_URL if using a custom domain (CNAME)
         env:
