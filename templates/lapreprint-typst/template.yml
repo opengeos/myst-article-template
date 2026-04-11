@@ -1,0 +1,82 @@
+jtex: v1
+kind: typst
+title: LaPreprint Typst Template
+description: Easily create beautiful preprints in Typst
+template: template.typ
+files:
+  - lapreprint.typ
+  - frontmatter.typ
+  - template.typ
+  - LICENSE
+authors:
+  - name: Rowan Cockett
+    github: rowanc1
+    affiliations:
+      - Curvenote
+  - name: Franklin Koch
+    github: fwkoch
+    affiliations:
+      - Curvenote
+version: 0.0.1
+license: MIT
+tags:
+  - preprint
+  - article
+  - paper
+thumbnail: ./examples/pixels/files/screenshot.png
+github: https://github.com/myst-templates/lapreprint-typst
+doc:
+  - id: title
+    required: true
+  - id: authors
+    required: true
+  - id: subtitle
+  - id: short_title
+  - id: open_access
+  - id: keywords
+  - id: doi
+  - id: venue
+options:
+  - id: logo
+    type: file
+    description: An image path that is shown in the top right of the page
+  - id: kind
+    type: string
+    description: The "kind" of the content, e.g. "Original Research" - shown as the title of the margin content on the first page
+  - id: short_citation
+    type: string
+    description: |
+      The short citation used in the document header. By default, it
+      is automatically determined from the author names.
+  - id: heading_numbering
+    type: string
+    description: |
+      Heading numbering style.
+      See also https://typst.app/docs/reference/model/numbering/.
+  - id: theme
+    type: string
+    description: |
+      Allows to set the colortheme, e.g. red.darken(30%).
+      Default set to blue.darken(30%)
+
+
+parts:
+  - id: abstract
+    description: >
+      An abstract is a short summary of your research paper or report. A good
+      abstract will prepare readers for the detailed information to follow,
+      communicate the essence of the article and help readers take away and remember key points.
+    max_words: 500
+    required: true
+  - id: summary
+    description: Plain language summary
+    max_words: 500
+    required: false
+  - id: acknowledgements
+    description: >
+      Acknowledgements printed in the margin
+    max_words: 500
+  - id: availability
+    description: >
+      Data availability statement printed in the margin
+    max_words: 500

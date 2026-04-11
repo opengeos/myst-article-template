@@ -1,6 +1,5 @@
 ---
 title: Article Title
-subtitle: Subtitle of the article
 short_title: Article
 authors:
   - name: Author Name
@@ -15,15 +14,13 @@ keywords:
   - keyword two
 exports:
   - format: pdf
-    template: lapreprint-typst
+    template: ./templates/lapreprint-typst
     output: article.pdf
 kernelspec:
   display_name: Python 3
   language: python
   name: python3
 ---
-
-[**Download PDF**](article.pdf)
 
 # Introduction
 
@@ -49,7 +46,12 @@ Provide an overview of the topic here.
 
 ## Key Concepts
 
-Explain the key concepts that readers need to understand.
+Explain the key concepts that readers need to understand. This article builds
+on tools from the scientific Python ecosystem, including NumPy
+[@harris2020array], SciPy [@virtanen2020scipy], and Matplotlib
+[@hunter2007matplotlib]. For a broader introduction to data analysis in
+Python, see @mckinney2022python, which builds on ideas introduced by
+@mckinney2010data for reproducible scientific computing.
 
 ```{code-cell} ipython3
 print("Hello, World!")
@@ -59,7 +61,7 @@ print("Hello, World!")
 
 The table below shows an overview of the key tools used in this article.
 
-```{list-table} Overview of key tools
+```{list-table} Overview of key tools.
 :header-rows: 1
 :name: tab-tools
 
@@ -137,7 +139,7 @@ ax.set_title("A Simple Plot")
 plt.show()
 ```
 
-# Summary
+# Conclusion
 
 This article demonstrated the basic workflow. Replace this section with your
 own conclusions and next steps.
