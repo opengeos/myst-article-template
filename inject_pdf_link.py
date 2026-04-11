@@ -5,12 +5,14 @@ Runs after ``myst build --html`` as a deploy-time post-process. This keeps
 the link out of the MyST source (and therefore out of the Typst/PDF export)
 while still surfacing it on the published HTML site.
 
-The link is inserted right before ``<section id="frontmatter"`` in
-each HTML file under ``_build/html/``. The enclosing article-header
-container is a CSS grid that only places children with ``col-*``
-classes, so the injected element also carries ``col-body`` to match
-the layout of the title section that follows it. The target PDF path
-is ``article.pdf``, which the deploy workflow copies to the HTML site
+The link is inserted right before the theme's frontmatter block in
+each HTML file under ``_build/html/``. The frontmatter block is the
+opening element whose ``class`` contains both ``myst-fm-block`` and
+``myst-article-header-fm``. The enclosing article-header container
+is a CSS grid that only places children with ``col-*`` classes, so
+the injected element also carries ``col-body`` to match the layout
+of the title section that follows it. The target PDF path is
+``article.pdf``, which the deploy workflow copies to the HTML site
 root.
 
 Usage:
@@ -37,23 +39,26 @@ LINK_HTML = (
 )
 
 FRONTMATTER_PATTERN = re.compile(
-    r'<section id="frontmatter"', flags=re.IGNORECASE
+    r'(<[a-zA-Z][^>]*class="[^"]*\bmyst-fm-block\b[^"]*\bmyst-article-header-fm\b[^"]*"[^>]*>)',
+    flags=re.IGNORECASE,
 )
 
 
 def inject_link(html: str) -> tuple[str, bool]:
-    """Insert the download link immediately before ``<section id="frontmatter">``.
+    """Insert the download link immediately before the frontmatter block.
+
+    The frontmatter block is matched by class name
+    (``myst-fm-block myst-article-header-fm``) rather than a fixed id,
+    because the theme's HTML structure has shifted between versions.
 
     Args:
         html: Raw HTML contents of a built page.
 
     Returns:
         A tuple of ``(new_html, changed)`` where ``changed`` is True iff
-        the frontmatter section was found and the link was injected.
+        the frontmatter block was found and the link was injected.
     """
-    new_html, n = FRONTMATTER_PATTERN.subn(
-        LINK_HTML + '<section id="frontmatter"', html, count=1
-    )
+    new_html, n = FRONTMATTER_PATTERN.subn(LINK_HTML + r"\1", html, count=1)
     return new_html, n > 0
 
 
