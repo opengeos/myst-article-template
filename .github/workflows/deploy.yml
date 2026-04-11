@@ -58,9 +58,6 @@ jobs:
       - name: Copy PDF into site root
         run: cp ./article.pdf ./_build/html/article.pdf
 
-      - name: Inject PDF download link into HTML
-        run: python inject_pdf_link.py
-
       # - name: Copy static files
       #   run: |
       #     cp robots.txt ./_build/html/
