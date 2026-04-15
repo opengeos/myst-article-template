@@ -2,10 +2,20 @@
 title: Article Title
 short_title: Article
 authors:
-  - name: Author Name
+  - name: First Author
     affiliations:
-      - Affiliation
+      - affiliation-one
+    orcid: 0000-0000-0000-0001
     email: author@example.com
+  - name: Second Author
+    affiliations:
+      - affiliation-two
+    orcid: 0000-0000-0000-0002
+affiliations:
+  - id: affiliation-one
+    name: Department of Geography, University of Example
+  - id: affiliation-two
+    name: Department of Computer Science, University of Example
 abstract: |
   A one-paragraph abstract summarizing the article. Replace this placeholder with
   a concise description of the problem, approach, and key findings.
