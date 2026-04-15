@@ -223,7 +223,7 @@
   }
   // Authors and affiliations
   if authors.len() > 0 {
-    box(inset: (y: 10pt), {
+    block(inset: (top: 10pt), {
       authors.map(author => {
         text(11pt, weight: "semibold", author.name)
         h(1pt)
@@ -237,12 +237,12 @@
     })
   }
   if affiliations.len() > 0 {
-    box(inset: (bottom: 10pt), {
+    block(inset: (bottom: 10pt), {
       affiliations.map(affiliation => {
         super(affiliation.id)
         h(1pt)
         affiliation.name
-      }).join(", ")
+      }).join(linebreak())
     })
   }
 
